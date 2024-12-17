@@ -189,34 +189,6 @@ def visualize_with_pygame(env):
                     draw_grid(screen)  # Dessiner la grille avec les indices des cases
                     
                     for taxi in env.taxis:
-                        # # Dessiner la trajectoire finie
-                        # for line in taxi.finished_trajectory:
-                        #     draw_line(screen, line[0], line[1], taxi.color)
-
-                        # # Dessiner la position actuelle
-                        # # pygame.draw.circle(screen, taxi.color, 
-                        # #                    (taxi.position[0] * cell_size + cell_size // 2, taxi.position[1] * cell_size + cell_size // 2), 10)
-                        # pygame.draw.circle(
-                        #     screen, taxi.color,
-                        #     (taxi.position[1] * cell_size + cell_size // 2,  # Colonne -> axe x
-                        #     taxi.position[0] * cell_size + cell_size // 2), # Ligne -> axe y
-                        #     10
-                        # )
-
-                        
-                        # # Afficher le numéro du taxi au-dessus de sa position
-                        # font = pygame.font.SysFont("Arial", 14)
-                        # text = font.render(f"Taxi {taxi.taxi_id}", True, (0, 0, 0))
-                        # screen.blit(
-                        #     text,
-                        #     (taxi.position[1] * cell_size + cell_size // 2 - text.get_width() // 2,  # Colonne -> axe x
-                        #     taxi.position[0] * cell_size + cell_size // 2 - 20)  # Ligne -> axe y
-                        # )
-
-
-                        # # Exécuter la tâche
-                        # taxi.execute_task()
-
                         # Mettre à jour les trajectoires avant de dessiner
                         taxi.update_trajectories()
 
