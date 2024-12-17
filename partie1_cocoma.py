@@ -28,6 +28,7 @@ class Taxi:
         self.trajectory = []      # Liste des trajectoires pour visualisation
         self.current_task_index = 0  # Index de la tâche en cours
         self.finished_trajectory = []  # Trajectoires terminées pour affichage
+        self.recent_trajectory = []  # Trajectoires terminées récemment
         self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))  # Couleur aléatoire pour chaque taxi
 
     def calculate_distance(self, pos1, pos2):
@@ -47,17 +48,23 @@ class Taxi:
 
             # Si le taxi doit d'abord se rendre au point de départ
             if self.position != task.start:
-                self.finished_trajectory.append((self.position, task.start))
+                self.recent_trajectory.append((self.position, task.start))
                 self.position = task.start
-                print(f"Taxi {self.taxi_id} moved to position {self.position}")  # Affichage de la position
+                print(f"Taxi {self.taxi_id} moved to position {self.position}")
             else:
                 # Aller à la destination
-                self.finished_trajectory.append((self.position, task.end))
+                self.recent_trajectory.append((self.position, task.end))
                 self.position = task.end
-                print(f"Taxi {self.taxi_id} moved to position {self.position}")  # Affichage de la position
+                print(f"Taxi {self.taxi_id} moved to position {self.position}")
 
                 # Passer à la tâche suivante
                 self.current_task_index += 1
+        
+    def update_trajectories(self):
+        """Mettre à jour les trajectoires pour les afficher un pas de temps supplémentaire."""
+        self.finished_trajectory.extend(self.recent_trajectory)
+        self.recent_trajectory = []  # Réinitialiser les nouvelles trajectoires
+
         
     def reset_finished_trajectory(self):
         """Réinitialiser la trajectoire terminée."""
@@ -65,7 +72,7 @@ class Taxi:
 
     def __repr__(self):
         return f"Taxi(id={self.taxi_id}, position={self.position}, total_cost={self.total_cost:.2f})"
-
+    
 
 # -------------------------------
 # Environnement de simulation
@@ -132,9 +139,13 @@ def visualize_with_pygame(env):
     cell_size = SCREEN_SIZE // env.grid_size
 
     def draw_line(screen, start, end, color):
-        pygame.draw.line(screen, color, 
-                         (start[0] * cell_size + cell_size // 2, start[1] * cell_size + cell_size // 2),
-                         (end[0] * cell_size + cell_size // 2, end[1] * cell_size + cell_size // 2), 3)
+        pygame.draw.line(
+            screen, color,
+            (start[1] * cell_size + cell_size // 2, start[0] * cell_size + cell_size // 2),  # Colonne -> x, Ligne -> y
+            (end[1] * cell_size + cell_size // 2, end[0] * cell_size + cell_size // 2),      # Colonne -> x, Ligne -> y
+            3
+        )
+
 
     def draw_grid(screen):
         """Dessiner la grille avec les indices des cases sur les bords."""
@@ -178,19 +189,61 @@ def visualize_with_pygame(env):
                     draw_grid(screen)  # Dessiner la grille avec les indices des cases
                     
                     for taxi in env.taxis:
-                        # Dessiner la trajectoire finie
+                        # # Dessiner la trajectoire finie
+                        # for line in taxi.finished_trajectory:
+                        #     draw_line(screen, line[0], line[1], taxi.color)
+
+                        # # Dessiner la position actuelle
+                        # # pygame.draw.circle(screen, taxi.color, 
+                        # #                    (taxi.position[0] * cell_size + cell_size // 2, taxi.position[1] * cell_size + cell_size // 2), 10)
+                        # pygame.draw.circle(
+                        #     screen, taxi.color,
+                        #     (taxi.position[1] * cell_size + cell_size // 2,  # Colonne -> axe x
+                        #     taxi.position[0] * cell_size + cell_size // 2), # Ligne -> axe y
+                        #     10
+                        # )
+
+                        
+                        # # Afficher le numéro du taxi au-dessus de sa position
+                        # font = pygame.font.SysFont("Arial", 14)
+                        # text = font.render(f"Taxi {taxi.taxi_id}", True, (0, 0, 0))
+                        # screen.blit(
+                        #     text,
+                        #     (taxi.position[1] * cell_size + cell_size // 2 - text.get_width() // 2,  # Colonne -> axe x
+                        #     taxi.position[0] * cell_size + cell_size // 2 - 20)  # Ligne -> axe y
+                        # )
+
+
+                        # # Exécuter la tâche
+                        # taxi.execute_task()
+
+                        # Mettre à jour les trajectoires avant de dessiner
+                        taxi.update_trajectories()
+
+                        # Dessiner les trajectoires finies
                         for line in taxi.finished_trajectory:
                             draw_line(screen, line[0], line[1], taxi.color)
 
+                        # Dessiner les trajectoires récentes
+                        for line in taxi.recent_trajectory:
+                            draw_line(screen, line[0], line[1], (0, 0, 0))  # Couleur noire pour différencier
+
                         # Dessiner la position actuelle
-                        pygame.draw.circle(screen, taxi.color, 
-                                           (taxi.position[0] * cell_size + cell_size // 2, taxi.position[1] * cell_size + cell_size // 2), 10)
+                        pygame.draw.circle(
+                            screen, taxi.color,
+                            (taxi.position[1] * cell_size + cell_size // 2,
+                            taxi.position[0] * cell_size + cell_size // 2),
+                            10
+                        )
                         
-                        # Afficher le numéro du taxi au-dessus de sa position
+                        # Afficher le numéro du taxi
                         font = pygame.font.SysFont("Arial", 14)
                         text = font.render(f"Taxi {taxi.taxi_id}", True, (0, 0, 0))
-                        screen.blit(text, (taxi.position[0] * cell_size + cell_size // 2 - text.get_width() // 2, 
-                                           taxi.position[1] * cell_size + cell_size // 2 - 20))
+                        screen.blit(
+                            text,
+                            (taxi.position[1] * cell_size + cell_size // 2 - text.get_width() // 2,
+                            taxi.position[0] * cell_size + cell_size // 2 - 20)
+                        )
 
                         # Exécuter la tâche
                         taxi.execute_task()
