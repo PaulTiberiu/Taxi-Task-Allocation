@@ -95,12 +95,27 @@ class Environment:
     def allocate_tasks(self):
         """Allouer les tâches aux taxis en minimisant les coûts."""
         for task in self.tasks:
+            print(f"\n[Time {self.time}] Allocating task {task}")
+            
+            best_taxi = None
+            best_cost = float('inf')
+
             # Trouver le taxi le plus proche du début de la tâche
-            best_taxi = min(self.taxis, key=lambda taxi: taxi.calculate_distance(taxi.position, task.start))
+            for taxi in self.taxis:
+                cost = taxi.calculate_distance(taxi.position, task.start)
+                print(f"Taxi {taxi.taxi_id} has cost {cost:.2f} for task {task}")
+
+                if cost < best_cost:
+                    best_cost = cost
+                    best_taxi = taxi
+            
+            # Allouer la tâche au taxi sélectionné
             best_taxi.assign_task(task)
-            print(f"Assigned {task} to Taxi {best_taxi.taxi_id}")
+            print(f"Assigned task {task} to Taxi {best_taxi.taxi_id} with cost {best_cost:.2f}")
+        
         # Vider la liste des tâches après allocation
         self.tasks = []
+
 
 # -------------------------------
 # Visualisation avec Pygame
@@ -170,6 +185,12 @@ def visualize_with_pygame(env):
                         # Dessiner la position actuelle
                         pygame.draw.circle(screen, taxi.color, 
                                            (taxi.position[0] * cell_size + cell_size // 2, taxi.position[1] * cell_size + cell_size // 2), 10)
+                        
+                        # Afficher le numéro du taxi au-dessus de sa position
+                        font = pygame.font.SysFont("Arial", 14)
+                        text = font.render(f"Taxi {taxi.taxi_id}", True, (0, 0, 0))
+                        screen.blit(text, (taxi.position[0] * cell_size + cell_size // 2 - text.get_width() // 2, 
+                                           taxi.position[1] * cell_size + cell_size // 2 - 20))
 
                         # Exécuter la tâche
                         taxi.execute_task()
