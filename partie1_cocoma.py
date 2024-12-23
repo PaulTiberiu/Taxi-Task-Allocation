@@ -2,6 +2,7 @@ import random
 import math
 import pygame
 import sys
+import itertools
 
 # -------------------------------
 # Classes principales
@@ -49,13 +50,15 @@ class Taxi:
             # Si le taxi doit d'abord se rendre au point de départ
             if self.position != task.start:
                 self.recent_trajectory.append((self.position, task.start))
+                old_position = self.position
                 self.position = task.start
-                print(f"Taxi {self.taxi_id} moved to position {self.position}")
+                print(f"Taxi {self.taxi_id} moved from position {old_position} to position {self.position}")
             else:
                 # Aller à la destination
                 self.recent_trajectory.append((self.position, task.end))
+                old_position = self.position
                 self.position = task.end
-                print(f"Taxi {self.taxi_id} moved to position {self.position}")
+                print(f"Taxi {self.taxi_id} moved from position {old_position} to position {self.position}")
 
                 # Passer à la tâche suivante
                 self.current_task_index += 1
@@ -78,10 +81,11 @@ class Taxi:
 # Environnement de simulation
 # -------------------------------
 class Environment:
-    def __init__(self, grid_size, num_taxis, task_frequency, num_iterations, delay=200):
+    def __init__(self, grid_size, num_taxis, task_frequency, task_number, num_iterations, delay=200):
         self.grid_size = grid_size
         self.num_taxis = num_taxis
         self.task_frequency = task_frequency  # Fréquence d'arrivée des tâches (T)
+        self.task_number = task_number  # Nombre de tâches à générer
         self.num_iterations = num_iterations  # Nombre total d'itérations
         self.taxis = [Taxi(taxi_id=i, position=self.random_position()) for i in range(num_taxis)]
         self.tasks = []  # Liste des tâches en attente
@@ -94,40 +98,97 @@ class Environment:
 
     def generate_tasks(self):
         """Générer des tâches aléatoires."""
-        num_tasks = random.randint(1, self.num_taxis)  # Par exemple, jusqu'à 1 tâche par taxi
+        num_tasks = random.randint(1, self.task_number)  # Par exemple, jusqu'à 1 tâche par taxi
         new_tasks = [Task(start=self.random_position(), end=self.random_position()) for _ in range(num_tasks)]
         self.tasks.extend(new_tasks)
         print(f"\n[Time {self.time}] Generated {len(new_tasks)} new tasks: {new_tasks}")
-
-    def allocate_tasks(self):
-        """Allouer les tâches aux taxis en minimisant les coûts."""
-        for task in self.tasks:
-            print(f"\n[Time {self.time}] Allocating task {task}")
-            
-            best_taxi = None
-            best_cost = float('inf')
-
-            # Trouver le taxi le plus proche du début de la tâche
-            for taxi in self.taxis:
-                cost = taxi.calculate_distance(taxi.position, task.start)
-                print(f"Taxi {taxi.taxi_id} has cost {cost:.2f} for task {task}")
-
-                if cost < best_cost:
-                    best_cost = cost
-                    best_taxi = taxi
-            
-            # Allouer la tâche au taxi sélectionné
-            best_taxi.assign_task(task)
-            print(f"Assigned task {task} to Taxi {best_taxi.taxi_id} with cost {best_cost:.2f}")
         
-        # Vider la liste des tâches après allocation
+    def allocate_tasks(self, allocation_method=0):
+        """Allouer les tâches aux taxis selon la méthode spécifiée."""
+        if allocation_method == 0:
+            self.allocate_tasks_random()
+        elif allocation_method == 1: 
+            self.allocate_tasks_greedy()
+
+    def allocate_tasks_random(self):
+        """Allouer les tâches aléatoirement aux taxis tout en optimisant l'ordre des tâches."""
+        for task in self.tasks:
+            random_taxi = random.choice(self.taxis)
+            # Ajouter la nouvelle tâche à celles déjà attribuées
+            all_tasks = [task] + random_taxi.tasks
+            
+            # Optimiser l'ordre des tâches pour le taxi choisi
+            start_position = random_taxi.position if not random_taxi.tasks else random_taxi.tasks[-1].end
+            optimized_order, _ = self.optimize_task_order(all_tasks, start_position)
+            
+            # Mettre à jour les tâches du taxi avec l'ordre optimisé
+            random_taxi.tasks = optimized_order
+            print(f"Randomly assigned and optimized task {task} to Taxi {random_taxi.taxi_id}")
+        
+        # Vider la liste des tâches après l'allocation
         self.tasks = []
 
+
+    def allocate_tasks_greedy(self):
+        """Allouer les tâches aux taxis en minimisant les coûts."""
+        for task in self.tasks:
+            costs = []
+
+            for taxi in self.taxis:
+                startx, starty = (taxi.position if not taxi.tasks else taxi.tasks[-1].end)
+                all_tasks = [task] + taxi.tasks
+                order, cost = self.optimize_task_order(all_tasks, (startx, starty))
+                costs.append((cost, taxi, order))
+
+            costs.sort(key=lambda x: x[0])
+            best_cost, best_taxi, best_order = costs[0]
+            best_taxi.tasks = best_order
+            print(f"Greedy assigned task {task} to Taxi {best_taxi.taxi_id} with cost {best_cost:.2f}")
+
+        self.tasks = []
+    
+
+    # Ordonancement des tâches
+    def optimize_task_order(self, tasks, start_position):
+        """Trouver l'ordre optimal des tâches pour minimiser le coût."""
+        min_cost = float('inf')
+        best_order = []
+
+        #print("\nOptimizing task order:")
+        #print(f"Initial tasks: {tasks}")
+        #print(f"Start position: {start_position}")
+
+        for permutation in itertools.permutations(tasks):
+            current_position = start_position
+            total_cost = 0
+
+            #print(f"\nTesting permutation: {permutation}")
+            for task in permutation:
+                distance_to_start = self.calculate_distance(current_position, task.start)
+                distance_to_end = self.calculate_distance(task.start, task.end)
+                total_cost += distance_to_start + distance_to_end
+                current_position = task.end
+                #print(f"  Moving to {task.start}: +{distance_to_start:.2f}")
+                #print(f"  Completing task to {task.end}: +{distance_to_end:.2f}")
+
+            #print(f"  Total cost for this permutation: {total_cost:.2f}")
+
+            if total_cost < min_cost:
+                min_cost = total_cost
+                best_order = list(permutation)
+                #print(f"  New best order found with cost {min_cost:.2f}")
+
+        #print(f"\nBest order: {best_order} with minimum cost: {min_cost:.2f}")
+        return best_order, min_cost
+
+    
+    def calculate_distance(self, pos1, pos2):
+        return math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2)
 
 # -------------------------------
 # Visualisation avec Pygame
 # -------------------------------
-def visualize_with_pygame(env):
+def visualize_with_pygame(env, allocation_method=0):
     pygame.init()
     
     # Configuration de l'affichage
@@ -182,7 +243,7 @@ def visualize_with_pygame(env):
                     if time_step % env.task_frequency == 0:
                         env.generate_tasks()
                     if env.tasks:
-                        env.allocate_tasks()
+                        env.allocate_tasks(allocation_method=allocation_method)
 
                     # Dessiner l'environnement
                     screen.fill((255, 255, 255))
@@ -237,14 +298,17 @@ def visualize_with_pygame(env):
     sys.exit()
 
 # -------------------------------
-# Main Program
+# Main Program 
 # -------------------------------
 if __name__ == "__main__":
     GRID_SIZE = 20
     NUM_TAXIS = 3
-    TASK_FREQUENCY = 5
+    TASK_FREQUENCY = 8
+    TASK_NUMBER = 3 # Nombre de tâches à générer, >= NUM_TAXIS
     NUM_ITERATIONS = 30
     DELAY = 500  # Délai de 500 millisecondes (0.5 seconde) entre chaque itération
 
-    env = Environment(grid_size=GRID_SIZE, num_taxis=NUM_TAXIS, task_frequency=TASK_FREQUENCY, num_iterations=NUM_ITERATIONS, delay=DELAY)
-    visualize_with_pygame(env)
+    env = Environment(grid_size=GRID_SIZE, num_taxis=NUM_TAXIS, task_frequency=TASK_FREQUENCY, task_number=TASK_NUMBER, num_iterations=NUM_ITERATIONS, delay=DELAY)
+
+    ALLOCATION_METHOD = 1  # 0 pour aléatoire, 1 pour glouton
+    visualize_with_pygame(env, allocation_method = ALLOCATION_METHOD)
