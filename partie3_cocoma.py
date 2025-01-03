@@ -92,7 +92,7 @@ class Taxi:
 
     # Les 2 methodes du cours: Heuristique de Prim et Heuristique par insertion
     def prim_heuristic(self, task):
-        """Calculer le coût minimum pour rejoindre le point de départ d'une tâche."""
+        """Calculer le coût minimum (marginal) pour rejoindre le point de départ d'une tâche."""
         initial_position = self.position if not self.tasks else self.tasks[-1].end
         min_cost = self.calculate_distance(initial_position, task.start)
         for t in self.tasks:
@@ -132,9 +132,9 @@ class Taxi:
         return min_cost
     
     def heuristic(self, task):
-        if self.heuristic_method == 0:
+        if self.heuristic_method == 0: # Prim
             return self.prim_heuristic(task)
-        elif self.heuristic_method == 1:
+        elif self.heuristic_method == 1: # Insertion
             return self.insert_task_heuristic(task)
 
     def bid_heuristic(self, task, heuristic_method):
@@ -146,7 +146,7 @@ class Taxi:
         """Assigner une tâche au taxi et optimiser l'ordre des tâches."""
         self.tasks.append(task)
         start_position = self.position if not self.tasks else self.tasks[-1].end
-        self.tasks, _ = env.optimize_task_order(self.tasks, start_position)
+        self.tasks, _ = env.optimize_task_order(self.tasks, start_position) # Reordonner les tâches pour minimiser le coût
 
 # -------------------------------
 # Environnement de simulation
@@ -466,5 +466,5 @@ if __name__ == "__main__":
     env = Environment(grid_size=GRID_SIZE, num_taxis=NUM_TAXIS, task_frequency=TASK_FREQUENCY, task_number=TASK_NUMBER, num_iterations=NUM_ITERATIONS, delay=DELAY)
 
     ALLOCATION_METHOD = 2  # 0 pour aléatoire, 1 pour glouton, 2 pour PSI
-    HEURISTIC_METHOD = 1  # 0 pour Prim, 1 pour Insertion
+    HEURISTIC_METHOD = 0  # 0 pour Prim, 1 pour Insertion
     visualize_with_pygame(env, allocation_method = ALLOCATION_METHOD, heuristic_method = HEURISTIC_METHOD)
