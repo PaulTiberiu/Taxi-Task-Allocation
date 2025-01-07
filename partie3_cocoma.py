@@ -40,7 +40,6 @@ class Taxi:
     #     """Assigner une tâche au taxi et mettre à jour le coût."""
     #     self.tasks.append(task)
 
-    #     # TODO: a voir s'il faut mettre a jour le cout total
     #     #self.total_cost += self.calculate_distance(self.position, task.start) + self.calculate_distance(task.start, task.end)
 
     #     # Ajouter la trajectoire vers la position de départ et la destination
@@ -149,15 +148,16 @@ class Taxi:
     def assign_task(self, task):
         """Assigner une tâche au taxi et optimiser l'ordre des tâches."""
         self.tasks.append(task)
-        start_position = self.position if not self.tasks else self.tasks[-1].end
+        #start_position = self.position if not self.tasks else self.tasks[-1].end
 
         self.trajectory.append((self.position, task.start))
         self.trajectory.append((task.start, task.end))
 
-        # TODO: a voir s'il faut mettre a jour le cout total
-        #     #self.total_cost += self.calculate_distance(self.position, task.start) + self.calculate_distance(task.start, task.end)
+        # Mettre a jour le cout total
+        self.total_cost += self.calculate_distance(self.position, task.start) + self.calculate_distance(task.start, task.end)
 
-        self.tasks, _ = env.optimize_task_order(self.tasks, start_position) # Reordonner les tâches pour minimiser le coût
+        # Pas besoin de le faire, c'est fait dans le lancement du code, après l'allocation des tâches
+        #self.tasks, _ = env.optimize_task_order(self.tasks, start_position) # Reordonner les tâches pour minimiser le coût
 
 # -------------------------------
 # Environnement de simulation
@@ -190,33 +190,25 @@ class Environment:
         if allocation_method == 0:
             self.allocate_tasks_random()
         elif allocation_method == 1: 
-            self.allocate_tasks_greedy()
+            self.allocate_tasks_opti()
         elif allocation_method == 2:
             self.allocate_tasks_psi()
+        elif allocation_method == 3:
+            self.allocate_tasks_ssi()
 
     def allocate_tasks_random(self):
-        """Allouer les tâches aléatoirement aux taxis tout en optimisant l'ordre des tâches."""
+        """Allouer les tâches aléatoirement aux taxis"""
         for task in self.tasks:
             random_taxi = random.choice(self.taxis)
-            # Ajouter la nouvelle tâche à celles déjà attribuées
-            all_tasks = [task] + random_taxi.tasks
-            
-            # Optimiser l'ordre des tâches pour le taxi choisi
-            start_position = random_taxi.position if not random_taxi.tasks else random_taxi.tasks[-1].end
-
-            # TODO: est-ce qu'on optimise l'ordre des tâches pour chaque taxi?
-            optimized_order, _ = self.optimize_task_order(all_tasks, start_position)
-            
-            # Mettre à jour les tâches du taxi avec l'ordre optimisé
-            random_taxi.tasks = optimized_order
+            random_taxi.tasks.append(task)
             print(f"Randomly assigned and optimized task {task} to Taxi {random_taxi.taxi_id}")
         
         # Vider la liste des tâches après l'allocation
         self.tasks = []
 
-
-    def allocate_tasks_greedy(self):
-        """Allouer les tâches aux taxis en minimisant les coûts."""
+    # Tres lourd par rapport au temps, mais opti pour l'ordonnancement des tâches - surtout utilise pour tester la partie 1
+    def allocate_tasks_opti(self):
+        """Allouer les tâches aux taxis en minimisant les coûts par rapport a la fonction d'optimisation."""
         for task in self.tasks:
             costs = []
 
@@ -224,14 +216,13 @@ class Environment:
                 startx, starty = (taxi.position if not taxi.tasks else taxi.tasks[-1].end)
                 all_tasks = [task] + taxi.tasks
 
-                # TODO - est-ce qu'on optimise l'ordre des tâches pour chaque taxi?
                 order, cost = self.optimize_task_order(all_tasks, (startx, starty))
                 costs.append((cost, taxi, order))
 
             costs.sort(key=lambda x: x[0])
             best_cost, best_taxi, best_order = costs[0]
             best_taxi.tasks = best_order
-            print(f"Greedy assigned task {task} to Taxi {best_taxi.taxi_id} with cost {best_cost:.2f}")
+            print(f"Opti assigned task {task} to Taxi {best_taxi.taxi_id} with cost {best_cost:.2f}")
 
         self.tasks = []
     
@@ -314,7 +305,7 @@ class Environment:
         # Assigner les tâches aux taxis
         for taxi in self.taxis:
             if task_allocations[taxi]:
-                print(f"\nAssigning tasks to Taxi {taxi}: {task_allocations[taxi]}")
+                print(f"\n[PSI] Assigning tasks to Taxi {taxi}: {task_allocations[taxi]}")
                 for task in task_allocations[taxi]:
                     taxi.assign_task(task)
             else:
@@ -332,13 +323,41 @@ class Environment:
 
     
     # SSI
+    def allocate_tasks_ssi(self, heuristic_method=0):
+        """Allocation des tâches avec enchères Sequential Single-item (SSI)."""
+        task_allocations = {taxi: [] for taxi in self.taxis}
+        taches_non_allocated = self.tasks
+
+        while taches_non_allocated:
+            taxis_bids = {taxi:None for taxi in self.taxis}
+            # Chaque taxi soumet une enchère pour chaque tâche
+            for taxi in self.taxis:
+                bids = [(taxi.bid_heuristic(task, heuristic_method), taxi) for task in taches_non_allocated]
+                best_bids = min(bids)
+                ind_best_bids = bids.index(best_bids)
+                taxis_bids[taxi] = (ind_best_bids, best_bids)
+
+            winner = min(taxis_bids,key = lambda k: taxis_bids[k][1])
+            task_done = self.tasks[taxis_bids[winner][0]]
+            print(f"  Winner for task {task_done}: Taxi {winner}")
+            winner.assign_task(task_done)
+            taches_non_allocated.remove(task_done)
+
+        # Supprimer les tâches allouées de la liste des tâches disponibles
+        allocated_tasks = [task for tasks in task_allocations.values() for task in tasks]
+        self.tasks = [task for task in self.tasks if task not in allocated_tasks]
+
+        # État final des taxis
+        print("\n  Final state of taxis:")
+        for taxi in self.taxis:
+            print(f"  Taxi {taxi}: Tasks = {taxi.tasks}")
 
 
 
 # -------------------------------
 # Visualisation avec Pygame
 # -------------------------------
-def visualize_with_pygame(env, allocation_method=0, heuristic_method=0):
+def visualize_with_pygame(env, allocation_method=0, heuristic_method=0, ordonancement_method=0):
     pygame.init()
     
     # Configuration de l'affichage
@@ -349,10 +368,18 @@ def visualize_with_pygame(env, allocation_method=0, heuristic_method=0):
 
     cell_size = SCREEN_SIZE // env.grid_size
 
-    if allocation_method == 2:
-        env.allocate_tasks_psi(heuristic_method=heuristic_method)
-    else:
-        env.allocate_tasks(allocation_method=allocation_method)
+    # Allouer les taches
+    env.allocate_tasks(allocation_method=allocation_method)
+
+    # TODO - tester greedy
+    if ordonancement_method == 0:
+        # Faire l'ordonnancement des tâches pour chaque taxi après l'allocation
+        for taxi in env.taxis:
+            taxi.tasks, taxi.total_cost = env.greedy_task_order(taxi.tasks, taxi.position)
+    elif ordonancement_method == 1:
+        # Faire l'ordonnancement des tâches pour chaque taxi après l'allocation
+        for taxi in env.taxis:
+            taxi.tasks, taxi.total_cost = env.optimize_task_order(taxi.tasks, taxi.position)
 
     def draw_line(screen, start, end, color):
         pygame.draw.line(
@@ -460,7 +487,7 @@ def visualize_with_pygame(env, allocation_method=0, heuristic_method=0):
 def compare_allocation_methods(env):
     methods = {
         "Random": env.allocate_tasks_random,
-        "Greedy": env.allocate_tasks_greedy,
+        "Opti": env.allocate_tasks_opti,
         "PSI": env.allocate_tasks_psi
     }
 
@@ -497,6 +524,8 @@ if __name__ == "__main__":
 
     env = Environment(grid_size=GRID_SIZE, num_taxis=NUM_TAXIS, task_frequency=TASK_FREQUENCY, task_number=TASK_NUMBER, num_iterations=NUM_ITERATIONS, delay=DELAY)
 
-    ALLOCATION_METHOD = 2  # 0 pour aléatoire, 1 pour glouton, 2 pour PSI
+    ALLOCATION_METHOD = 3  # 0 pour aléatoire, 1 pour Opti, 2 pour PSI, 3 pour SSI
     HEURISTIC_METHOD = 0  # 0 pour Prim, 1 pour Insertion
-    visualize_with_pygame(env, allocation_method = ALLOCATION_METHOD, heuristic_method = HEURISTIC_METHOD)
+    ORDONANCEMENT_METHOD = 1 # 0 pour Greedy, 1 pour Opti
+
+    visualize_with_pygame(env, allocation_method = ALLOCATION_METHOD, heuristic_method = HEURISTIC_METHOD, ordonancement_method = ORDONANCEMENT_METHOD)
