@@ -371,7 +371,6 @@ def visualize_with_pygame(env, allocation_method=0, heuristic_method=0, ordonanc
     # Allouer les taches
     env.allocate_tasks(allocation_method=allocation_method)
 
-    # TODO - tester greedy
     if ordonancement_method == 0:
         # Faire l'ordonnancement des tâches pour chaque taxi après l'allocation
         for taxi in env.taxis:
