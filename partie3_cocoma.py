@@ -96,7 +96,7 @@ class Taxi:
         initial_position = self.position if not self.tasks else self.tasks[-1].end
         min_cost = self.calculate_distance(initial_position, task.start)
         for t in self.tasks:
-            min_cost = min(min_cost, self.calculate_distance(t.start, task.start))
+            min_cost = min(min_cost, self.calculate_distance(t.end, task.start))
         return min_cost
 
     def insert_task_heuristic(self, task):
