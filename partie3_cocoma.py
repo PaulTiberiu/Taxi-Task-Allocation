@@ -36,16 +36,16 @@ class Taxi:
     def calculate_distance(self, pos1, pos2):
         return math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2)
 
-    def assign_task(self, task):
-        """Assigner une tâche au taxi et mettre à jour le coût."""
-        self.tasks.append(task)
+    # def assign_task(self, task):
+    #     """Assigner une tâche au taxi et mettre à jour le coût."""
+    #     self.tasks.append(task)
 
-        # TODO: a voir s'il faut mettre a jour le cout total
-        #self.total_cost += self.calculate_distance(self.position, task.start) + self.calculate_distance(task.start, task.end)
+    #     # TODO: a voir s'il faut mettre a jour le cout total
+    #     #self.total_cost += self.calculate_distance(self.position, task.start) + self.calculate_distance(task.start, task.end)
 
-        # Ajouter la trajectoire vers la position de départ et la destination
-        self.trajectory.append((self.position, task.start))
-        self.trajectory.append((task.start, task.end))
+    #     # Ajouter la trajectoire vers la position de départ et la destination
+    #     self.trajectory.append((self.position, task.start))
+    #     self.trajectory.append((task.start, task.end))
 
     def execute_task(self):
         """Exécuter la tâche en cours et gérer les trajectoires."""
@@ -150,6 +150,13 @@ class Taxi:
         """Assigner une tâche au taxi et optimiser l'ordre des tâches."""
         self.tasks.append(task)
         start_position = self.position if not self.tasks else self.tasks[-1].end
+
+        self.trajectory.append((self.position, task.start))
+        self.trajectory.append((task.start, task.end))
+
+        # TODO: a voir s'il faut mettre a jour le cout total
+        #     #self.total_cost += self.calculate_distance(self.position, task.start) + self.calculate_distance(task.start, task.end)
+
         self.tasks, _ = env.optimize_task_order(self.tasks, start_position) # Reordonner les tâches pour minimiser le coût
 
 # -------------------------------
@@ -196,6 +203,8 @@ class Environment:
             
             # Optimiser l'ordre des tâches pour le taxi choisi
             start_position = random_taxi.position if not random_taxi.tasks else random_taxi.tasks[-1].end
+
+            # TODO: est-ce qu'on optimise l'ordre des tâches pour chaque taxi?
             optimized_order, _ = self.optimize_task_order(all_tasks, start_position)
             
             # Mettre à jour les tâches du taxi avec l'ordre optimisé
@@ -214,6 +223,8 @@ class Environment:
             for taxi in self.taxis:
                 startx, starty = (taxi.position if not taxi.tasks else taxi.tasks[-1].end)
                 all_tasks = [task] + taxi.tasks
+
+                # TODO - est-ce qu'on optimise l'ordre des tâches pour chaque taxi?
                 order, cost = self.optimize_task_order(all_tasks, (startx, starty))
                 costs.append((cost, taxi, order))
 
