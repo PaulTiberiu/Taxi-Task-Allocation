@@ -39,6 +39,10 @@ class Taxi:
     def assign_task(self, task):
         """Assigner une tâche au taxi et mettre à jour le coût."""
         self.tasks.append(task)
+
+        # TODO: a voir s'il faut mettre a jour le cout total
+        #self.total_cost += self.calculate_distance(self.position, task.start) + self.calculate_distance(task.start, task.end)
+
         # Ajouter la trajectoire vers la position de départ et la destination
         self.trajectory.append((self.position, task.start))
         self.trajectory.append((task.start, task.end))
@@ -253,7 +257,20 @@ class Environment:
 
         #print(f"\nBest order: {best_order} with minimum cost: {min_cost:.2f}")
         return best_order, min_cost
+    
+    # TODO - algo Christofides pour l'ordonancement des tâches pour qu'il soit plus efficace en temps d'execution, mais pas optimal
 
+    # Greedy task order
+    # A tester
+    def greedy_task_order(self, tasks, start_position):
+        order = []
+        current_position = start_position
+        while tasks:
+            closest_task = min(tasks, key=lambda task: self.calculate_distance(current_position, task.start))
+            order.append(closest_task)
+            current_position = closest_task.end
+            tasks.remove(closest_task)
+        return order, sum(self.calculate_distance(t1.end, t2.start) for t1, t2 in zip(order[:-1], order[1:]))
     
     def calculate_distance(self, pos1, pos2):
         return math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2)
@@ -300,6 +317,10 @@ class Environment:
         print("\nFinal state of taxis:")
         for taxi in self.taxis:
             print(f"  Taxi {taxi}: Tasks = {taxi.tasks}")
+
+
+    
+    # SSI
 
 
 
