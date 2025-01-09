@@ -195,6 +195,8 @@ class Environment:
             self.allocate_tasks_psi()
         elif allocation_method == 3:
             self.allocate_tasks_ssi()
+        elif allocation_method == 4:
+            self.allocate_tasks_ssi_with_regret()
 
     def allocate_tasks_random(self):
         """Allouer les tâches aléatoirement aux taxis"""
@@ -351,6 +353,72 @@ class Environment:
         print("\n  Final state of taxis:")
         for taxi in self.taxis:
             print(f"  Taxi {taxi}: Tasks = {taxi.tasks}")
+
+    # SSI avec regret
+    def allocate_tasks_ssi_with_regret(self, heuristic_method=0):
+        """Allocation des tâches avec enchères Sequential Single-item (SSI) en tenant compte des regrets."""
+        task_allocations = {taxi: [] for taxi in self.taxis}
+        taches_non_allocated = self.tasks
+
+        while taches_non_allocated:
+            # Étape 1: Collecter les bids pour chaque tâche de chaque taxi
+            bids_matrix = {task: {} for task in taches_non_allocated}
+            for task in taches_non_allocated:
+                for taxi in self.taxis:
+                    bids_matrix[task][taxi] = taxi.bid_heuristic(task, heuristic_method)
+
+            # DEBUG - Afficher les bids pour chaque tâche et chaque taxi 
+            print("\nBids Matrix (per task and taxi):")
+            for task, bids in bids_matrix.items():
+                print(f"  Task {task}:")
+                for taxi, bid in bids.items():
+                    print(f"    Taxi {taxi}: Bid = {bid:.2f}")
+
+            # Étape 2: Calculer les regrets pour chaque tâche
+            regrets = {}
+            for task, bids in bids_matrix.items():
+                sorted_bids = sorted(bids.values()) # Trier les bids associés à une tâche donnée
+                print("sorted_bids: ",sorted_bids)
+                # Calcul du regret comme la différence absolue entre les deux meilleures bids
+                if len(sorted_bids) > 1:
+                    regret = abs(sorted_bids[1] - sorted_bids[0])
+                else:
+                    regret = 0  # Si un seul taxi a fait une offre, il n'y a pas de regret
+                regrets[task] = regret
+
+            # Étape 3: Trouver la tâche avec le regret maximal
+            # DEBUG - Afficher les regrets pour chaque tâche
+            print("\nRegrets for each task:")
+            for task, regret in regrets.items():
+                print(f"  Task {task}: Regret = {regret:.2f}")
+            #max_regret_task = max(regrets, key=regrets.get)
+            max_regret_value = max(regrets.values())
+            max_regret_tasks = [task for task, regret in regrets.items() if regret == max_regret_value]
+
+            # Si plusieurs tâches ont le même regret, choisir une tâche aléatoirement
+            max_regret_task = random.choice(max_regret_tasks)
+
+            # Étape 4: Allouer la tâche avec regret maximal au taxi ayant fait l'offre minimale
+            task_bids = bids_matrix[max_regret_task]
+            winner = min(task_bids, key=task_bids.get)  # Taxi ayant proposé le bid minimum pour la tâche
+
+            print(f"Task {max_regret_task} assigned to Taxi {winner} with bid {task_bids[winner]} (Regret = {regrets[max_regret_task]})")
+
+            # Assigner la tâche au taxi gagnant
+            winner.assign_task(max_regret_task)
+            taches_non_allocated.remove(max_regret_task)
+
+        # Supprimer les tâches allouées de la liste des tâches disponibles
+        allocated_tasks = [task for tasks in task_allocations.values() for task in tasks]
+        self.tasks = [task for task in self.tasks if task not in allocated_tasks]
+
+        # État final des taxis
+        print("\nFinal state of taxis:")
+        for taxi in self.taxis:
+            print(f"Taxi {taxi}: Tasks = {taxi.tasks}")
+
+            
+                
 
 
 
@@ -523,7 +591,7 @@ if __name__ == "__main__":
 
     env = Environment(grid_size=GRID_SIZE, num_taxis=NUM_TAXIS, task_frequency=TASK_FREQUENCY, task_number=TASK_NUMBER, num_iterations=NUM_ITERATIONS, delay=DELAY)
 
-    ALLOCATION_METHOD = 3  # 0 pour aléatoire, 1 pour Opti, 2 pour PSI, 3 pour SSI
+    ALLOCATION_METHOD = 4  # 0 pour aléatoire, 1 pour Opti, 2 pour PSI, 3 pour SSI, 4 SSI avec regret
     HEURISTIC_METHOD = 0  # 0 pour Prim, 1 pour Insertion
     ORDONANCEMENT_METHOD = 1 # 0 pour Greedy, 1 pour Opti
 
