@@ -3,6 +3,7 @@ import math
 import pygame
 import sys
 import itertools
+import networkx as nx
 
 # -------------------------------
 # Classes principales
@@ -262,7 +263,74 @@ class Environment:
         #print(f"\nBest order: {best_order} with minimum cost: {min_cost:.2f}")
         return best_order, min_cost
     
-    # TODO - algo Christofides pour l'ordonancement des tâches pour qu'il soit plus efficace en temps d'execution, mais pas optimal
+    # TODO - algo Christofides pour l'ordonancement des tâches pour qu'il soit plus efficace en temps d'execution, mais pas optimal(3/2-approché)
+    def optimize_task_order_christofides(self, tasks, start_position):
+        if tasks == []:
+            return [], 0
+        
+        # Step 1: Create a weighted graph where tasks are nodes
+        graph = nx.Graph()
+        task_indices = {i: task for i, task in enumerate(tasks)}
+        # Add weighted edges for all task pairs
+        for i, j in itertools.combinations(range(len(tasks)), 2):
+            task_i, task_j = task_indices[i], task_indices[j]
+            cost = (
+                self.calculate_distance(start_position, task_i.start)
+                + self.calculate_distance(task_i.end, task_j.start)
+                + self.calculate_distance(task_j.start, task_j.end)
+            )
+            graph.add_edge(i, j, weight=cost)
+
+        # Step 2: Find Minimum Spanning Tree (MST)
+        mst = nx.minimum_spanning_tree(graph, weight="weight")
+
+        # Step 3: Find vertices with odd degree
+        odd_degree_nodes = [node for node, degree in mst.degree() if degree % 2 == 1]
+        
+        
+        if len(odd_degree_nodes) < 2:
+            raise ValueError("Graph does not have enough odd-degree nodes for matching.")
+
+        # Step 4: Solve Minimum Weight Perfect Matching for odd-degree nodes
+        odd_graph = graph.subgraph(odd_degree_nodes)
+        matching = nx.algorithms.matching.min_weight_matching(odd_graph, weight="weight")
+
+        # Step 5: Combine MST and Matching
+        multigraph = nx.MultiGraph(mst)
+        multigraph.add_edges_from(matching)
+        
+         # Verify if the graph is Eulerian
+        if not nx.is_connected(multigraph):
+            raise ValueError("The multigraph is not connected.")
+        if any(degree % 2 != 0 for _, degree in multigraph.degree()):
+            raise ValueError("The multigraph is not Eulerian (contains odd-degree nodes).")
+        
+        print("MEEE")
+
+        # Step 6: Find an Eulerian circuit
+        eulerian_circuit = list(nx.eulerian_circuit(multigraph))
+
+        # Step 7: Convert Eulerian circuit to Hamiltonian path
+        visited = set()
+        tsp_order = []
+        for u, v in eulerian_circuit:
+            if u not in visited:
+                tsp_order.append(u)
+                visited.add(u)
+        tsp_order.append(tsp_order[0])  # Return to start
+
+        # Translate TSP order back to tasks
+        best_order = [task_indices[i] for i in tsp_order[:-1]]
+
+        # Compute total cost
+        current_position = start_position
+        total_cost = 0
+        for task in best_order:
+            total_cost += self.calculate_distance(current_position, task.start)
+            total_cost += self.calculate_distance(task.start, task.end)
+            current_position = task.end
+
+        return best_order, total_cost
 
     # Greedy task order
     # A tester
@@ -447,6 +515,9 @@ def visualize_with_pygame(env, allocation_method=0, heuristic_method=0, ordonanc
         # Faire l'ordonnancement des tâches pour chaque taxi après l'allocation
         for taxi in env.taxis:
             taxi.tasks, taxi.total_cost = env.optimize_task_order(taxi.tasks, taxi.position)
+    elif ordonancement_method==2:
+        for taxi in env.taxis:
+            taxi.tasks, taxi.total_cost = env. optimize_task_order_christofides(taxi.tasks, taxi.position)
 
     def draw_line(screen, start, end, color):
         pygame.draw.line(
@@ -585,7 +656,7 @@ if __name__ == "__main__":
     GRID_SIZE = 20
     NUM_TAXIS = 3
     TASK_FREQUENCY = 8
-    TASK_NUMBER = 3 # Nombre de tâches à générer, >= NUM_TAXIS
+    TASK_NUMBER =20 # Nombre de tâches à générer, >= NUM_TAXIS
     NUM_ITERATIONS = 30
     DELAY = 500  # Délai de 500 millisecondes (0.5 seconde) entre chaque itération
 
@@ -593,6 +664,6 @@ if __name__ == "__main__":
 
     ALLOCATION_METHOD = 4  # 0 pour aléatoire, 1 pour Opti, 2 pour PSI, 3 pour SSI, 4 SSI avec regret
     HEURISTIC_METHOD = 0  # 0 pour Prim, 1 pour Insertion
-    ORDONANCEMENT_METHOD = 1 # 0 pour Greedy, 1 pour Opti
+    ORDONANCEMENT_METHOD = 1 # 0 pour Greedy, 1 pour Opti, 2 pour Christoficides
 
     visualize_with_pygame(env, allocation_method = ALLOCATION_METHOD, heuristic_method = HEURISTIC_METHOD, ordonancement_method = ORDONANCEMENT_METHOD)
