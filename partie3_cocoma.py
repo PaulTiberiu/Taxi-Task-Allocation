@@ -656,7 +656,7 @@ if __name__ == "__main__":
     GRID_SIZE = 20
     NUM_TAXIS = 3
     TASK_FREQUENCY = 8
-    TASK_NUMBER =20 # Nombre de tâches à générer, >= NUM_TAXIS
+    TASK_NUMBER =10 # Nombre de tâches à générer, >= NUM_TAXIS
     NUM_ITERATIONS = 30
     DELAY = 500  # Délai de 500 millisecondes (0.5 seconde) entre chaque itération
 
@@ -664,6 +664,6 @@ if __name__ == "__main__":
 
     ALLOCATION_METHOD = 3  # 0 pour aléatoire, 1 pour Opti, 2 pour PSI, 3 pour SSI, 4 SSI avec regret
     HEURISTIC_METHOD = 0  # 0 pour Prim, 1 pour Insertion
-    ORDONANCEMENT_METHOD = 1 # 0 pour Greedy, 1 pour Opti, 2 pour Christoficides
+    ORDONANCEMENT_METHOD = 0 # 0 pour Greedy, 1 pour Opti, 2 pour Christoficides
 
     visualize_with_pygame(env, allocation_method = ALLOCATION_METHOD, heuristic_method = HEURISTIC_METHOD, ordonancement_method = ORDONANCEMENT_METHOD)
