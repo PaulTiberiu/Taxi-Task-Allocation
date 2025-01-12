@@ -407,7 +407,7 @@ class Environment:
                 ind_best_bids = bids.index(best_bids)
                 taxis_bids[taxi] = (ind_best_bids, best_bids)
 
-            winner = min(taxis_bids,key = lambda k: taxis_bids[k][1])
+            winner = min(taxis_bids,key = lambda k: (taxis_bids[k][1][0],k.taxi_id))
             task_done = self.tasks[taxis_bids[winner][0]]
             print(f"  Winner for task {task_done}: Taxi {winner}")
             winner.assign_task(task_done)
@@ -662,7 +662,7 @@ if __name__ == "__main__":
 
     env = Environment(grid_size=GRID_SIZE, num_taxis=NUM_TAXIS, task_frequency=TASK_FREQUENCY, task_number=TASK_NUMBER, num_iterations=NUM_ITERATIONS, delay=DELAY)
 
-    ALLOCATION_METHOD = 4  # 0 pour aléatoire, 1 pour Opti, 2 pour PSI, 3 pour SSI, 4 SSI avec regret
+    ALLOCATION_METHOD = 3  # 0 pour aléatoire, 1 pour Opti, 2 pour PSI, 3 pour SSI, 4 SSI avec regret
     HEURISTIC_METHOD = 0  # 0 pour Prim, 1 pour Insertion
     ORDONANCEMENT_METHOD = 1 # 0 pour Greedy, 1 pour Opti, 2 pour Christoficides
 
