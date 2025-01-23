@@ -18,7 +18,7 @@ def generate_file_yaml(env,nom_fic):
 
         #Ecriture des domaines dans le fichier yaml
         f.write("domains: \n")
-        f.write("   taxi: \n" )
+        f.write("   taxis: \n" )
         f.write("      values: ")
         f.write("[")
         for i in range(len(list_taxi)):
@@ -34,7 +34,7 @@ def generate_file_yaml(env,nom_fic):
             f.write("   ")
             f.write(tache)
             f.write(" : \n")
-            f.write("      domain: taxi \n")
+            f.write("      domain: taxis \n")
         f.write("\n")
 
         f.write("constraints: \n")
@@ -52,7 +52,8 @@ def generate_file_yaml(env,nom_fic):
                 if i<j:
                     f.write(f"   different_{list_taches[i]}_{list_taches[j]}: \n")
                     f.write("      type: intention \n")
-                    f.write(f"      function: 100 if {list_taches[i]}=={list_taches[j]} else 0 \n")
+                    cout=list_taches_env[i].calculate_distance(list_taches_env[i].end,list_taches_env[j].start)
+                    f.write(f"      function: {cout} if {list_taches[i]}=={list_taches[j]} else 0 \n")
                     f.write("\n")
         
         for i in range(len(list_taxi)):
@@ -67,8 +68,8 @@ def generate_file_yaml(env,nom_fic):
         
         f.write("\n")
         f.write(f"agents: \n")
-        for i in range(len(list_taxi)):
-            f.write(f"   {list_taxi[i]}: \n")
+        for i in range(len(list_taches)):
+            f.write(f"   {list_taches[i]}: \n")
             f.write("      capacity: 1 \n")
             
 
@@ -78,8 +79,8 @@ NUM_TAXIS = 3
 TASK_FREQUENCY = 5
 NUM_ITERATIONS = 30
 DELAY = 500  # Délai de 500 millisecondes (0.5 seconde) entre chaque itération
-TASK_NUMBER = 3 # Nombre de tâches à générer, >= NUM_TAXIS
+TASK_NUMBER = 6 # Nombre de tâches à générer, >= NUM_TAXIS
 
 env=Environment(grid_size=GRID_SIZE, num_taxis=NUM_TAXIS, task_frequency=TASK_FREQUENCY, task_number=TASK_NUMBER,num_iterations=NUM_ITERATIONS, delay=DELAY)
 env.generate_tasks()
-generate_file_yaml(env,"test.yaml")
+generate_file_yaml(env,"freq.yaml")
