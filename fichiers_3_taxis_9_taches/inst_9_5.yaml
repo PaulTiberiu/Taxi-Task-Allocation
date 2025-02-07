@@ -1,0 +1,273 @@
+name: Taxi Task Allocation Problem 
+objective: min 
+
+domains: 
+   taxis: 
+      values: [taxi_1,taxi_2,taxi_3]
+
+variables: 
+   task_1 : 
+      domain: taxis 
+   task_2 : 
+      domain: taxis 
+   task_3 : 
+      domain: taxis 
+   task_4 : 
+      domain: taxis 
+   task_5 : 
+      domain: taxis 
+   task_6 : 
+      domain: taxis 
+   task_7 : 
+      domain: taxis 
+   task_8 : 
+      domain: taxis 
+   task_9 : 
+      domain: taxis 
+
+constraints: 
+   pref_1: 
+      type: extensional 
+      variables: task_1 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_2: 
+      type: extensional 
+      variables: task_2 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_3: 
+      type: extensional 
+      variables: task_3 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_4: 
+      type: extensional 
+      variables: task_4 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_5: 
+      type: extensional 
+      variables: task_5 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_6: 
+      type: extensional 
+      variables: task_6 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_7: 
+      type: extensional 
+      variables: task_7 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_8: 
+      type: extensional 
+      variables: task_8 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_9: 
+      type: extensional 
+      variables: task_9 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   different_task_1_task_2: 
+      type: intention 
+      function: 6.4031242374328485 if task_1==task_2 else 0 
+
+   different_task_1_task_3: 
+      type: intention 
+      function: 14.212670403551895 if task_1==task_3 else 0 
+
+   different_task_1_task_4: 
+      type: intention 
+      function: 9.433981132056603 if task_1==task_4 else 0 
+
+   different_task_1_task_5: 
+      type: intention 
+      function: 9.219544457292887 if task_1==task_5 else 0 
+
+   different_task_1_task_6: 
+      type: intention 
+      function: 5.385164807134504 if task_1==task_6 else 0 
+
+   different_task_1_task_7: 
+      type: intention 
+      function: 1.4142135623730951 if task_1==task_7 else 0 
+
+   different_task_1_task_8: 
+      type: intention 
+      function: 18.867962264113206 if task_1==task_8 else 0 
+
+   different_task_1_task_9: 
+      type: intention 
+      function: 22.80350850198276 if task_1==task_9 else 0 
+
+   different_task_2_task_3: 
+      type: intention 
+      function: 11.661903789690601 if task_2==task_3 else 0 
+
+   different_task_2_task_4: 
+      type: intention 
+      function: 12.206555615733702 if task_2==task_4 else 0 
+
+   different_task_2_task_5: 
+      type: intention 
+      function: 6.082762530298219 if task_2==task_5 else 0 
+
+   different_task_2_task_6: 
+      type: intention 
+      function: 14.317821063276353 if task_2==task_6 else 0 
+
+   different_task_2_task_7: 
+      type: intention 
+      function: 14.0 if task_2==task_7 else 0 
+
+   different_task_2_task_8: 
+      type: intention 
+      function: 9.055385138137417 if task_2==task_8 else 0 
+
+   different_task_2_task_9: 
+      type: intention 
+      function: 13.341664064126334 if task_2==task_9 else 0 
+
+   different_task_3_task_4: 
+      type: intention 
+      function: 12.36931687685298 if task_3==task_4 else 0 
+
+   different_task_3_task_5: 
+      type: intention 
+      function: 9.219544457292887 if task_3==task_5 else 0 
+
+   different_task_3_task_6: 
+      type: intention 
+      function: 1.0 if task_3==task_6 else 0 
+
+   different_task_3_task_7: 
+      type: intention 
+      function: 5.0990195135927845 if task_3==task_7 else 0 
+
+   different_task_3_task_8: 
+      type: intention 
+      function: 19.79898987322333 if task_3==task_8 else 0 
+
+   different_task_3_task_9: 
+      type: intention 
+      function: 24.08318915758459 if task_3==task_9 else 0 
+
+   different_task_4_task_5: 
+      type: intention 
+      function: 7.280109889280518 if task_4==task_5 else 0 
+
+   different_task_4_task_6: 
+      type: intention 
+      function: 9.0 if task_4==task_6 else 0 
+
+   different_task_4_task_7: 
+      type: intention 
+      function: 11.661903789690601 if task_4==task_7 else 0 
+
+   different_task_4_task_8: 
+      type: intention 
+      function: 15.811388300841896 if task_4==task_8 else 0 
+
+   different_task_4_task_9: 
+      type: intention 
+      function: 20.248456731316587 if task_4==task_9 else 0 
+
+   different_task_5_task_6: 
+      type: intention 
+      function: 2.0 if task_5==task_6 else 0 
+
+   different_task_5_task_7: 
+      type: intention 
+      function: 6.082762530298219 if task_5==task_7 else 0 
+
+   different_task_5_task_8: 
+      type: intention 
+      function: 21.93171219946131 if task_5==task_8 else 0 
+
+   different_task_5_task_9: 
+      type: intention 
+      function: 26.1725046566048 if task_5==task_9 else 0 
+
+   different_task_6_task_7: 
+      type: intention 
+      function: 10.63014581273465 if task_6==task_7 else 0 
+
+   different_task_6_task_8: 
+      type: intention 
+      function: 8.06225774829855 if task_6==task_8 else 0 
+
+   different_task_6_task_9: 
+      type: intention 
+      function: 11.180339887498949 if task_6==task_9 else 0 
+
+   different_task_7_task_8: 
+      type: intention 
+      function: 6.324555320336759 if task_7==task_8 else 0 
+
+   different_task_7_task_9: 
+      type: intention 
+      function: 10.0 if task_7==task_9 else 0 
+
+   different_task_8_task_9: 
+      type: intention 
+      function: 8.06225774829855 if task_8==task_9 else 0 
+
+   cout_taxi_1: 
+      type: intention 
+      function: 14.172981246738551 if task_1=='taxi_1' else 19.529964086141668 if task_2=='taxi_1' else 32.67746085384395 if task_3=='taxi_1' else 28.635642126552707 if task_4=='taxi_1' else 18.681864140271898 if task_5=='taxi_1' else 24.231546211727817 if task_6=='taxi_1' else 23.06365804068198 if task_7=='taxi_1' else 20.811388300841898 if task_8=='taxi_1' else 37.74131241585249
+   cout_taxi_2: 
+      type: intention 
+      function: 15.70672987061327 if task_1=='taxi_2' else 22.529964086141668 if task_2=='taxi_2' else 33.31599997148706 if task_3=='taxi_2' else 30.12920936411825 if task_4=='taxi_2' else 20.004079518034004 if task_5=='taxi_2' else 27.231546211727817 if task_6=='taxi_2' else 25.719575314267733 if task_7=='taxi_2' else 20.13274595042156 if task_8=='taxi_2' else 36.9093435234835
+   cout_taxi_3: 
+      type: intention 
+      function: 20.24791464830646 if task_1=='taxi_3' else 17.002100041141247 if task_2=='taxi_3' else 33.19626233434009 if task_3=='taxi_3' else 26.400867036870928 if task_4=='taxi_3' else 21.69738439197838 if task_5=='taxi_3' else 18.05997333647401 if task_6=='taxi_3' else 15.524859876609039 if task_7=='taxi_3' else 25.615528128088304 if task_8=='taxi_3' else 42.2516924908158
+
+agents: 
+   task_1: 
+      capacity: 1 
+   task_2: 
+      capacity: 1 
+   task_3: 
+      capacity: 1 
+   task_4: 
+      capacity: 1 
+   task_5: 
+      capacity: 1 
+   task_6: 
+      capacity: 1 
+   task_7: 
+      capacity: 1 
+   task_8: 
+      capacity: 1 
+   task_9: 
+      capacity: 1 

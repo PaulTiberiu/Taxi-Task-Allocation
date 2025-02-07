@@ -1,0 +1,153 @@
+name: Taxi Task Allocation Problem 
+objective: min 
+
+domains: 
+   taxis: 
+      values: [taxi_1,taxi_2,taxi_3]
+
+variables: 
+   task_1 : 
+      domain: taxis 
+   task_2 : 
+      domain: taxis 
+   task_3 : 
+      domain: taxis 
+   task_4 : 
+      domain: taxis 
+   task_5 : 
+      domain: taxis 
+   task_6 : 
+      domain: taxis 
+
+constraints: 
+   pref_1: 
+      type: extensional 
+      variables: task_1 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_2: 
+      type: extensional 
+      variables: task_2 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_3: 
+      type: extensional 
+      variables: task_3 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_4: 
+      type: extensional 
+      variables: task_4 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_5: 
+      type: extensional 
+      variables: task_5 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_6: 
+      type: extensional 
+      variables: task_6 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   different_task_1_task_2: 
+      type: intention 
+      function: 16.1245154965971 if task_1==task_2 else 0 
+
+   different_task_1_task_3: 
+      type: intention 
+      function: 7.280109889280518 if task_1==task_3 else 0 
+
+   different_task_1_task_4: 
+      type: intention 
+      function: 5.385164807134504 if task_1==task_4 else 0 
+
+   different_task_1_task_5: 
+      type: intention 
+      function: 9.219544457292887 if task_1==task_5 else 0 
+
+   different_task_1_task_6: 
+      type: intention 
+      function: 12.041594578792296 if task_1==task_6 else 0 
+
+   different_task_2_task_3: 
+      type: intention 
+      function: 11.045361017187261 if task_2==task_3 else 0 
+
+   different_task_2_task_4: 
+      type: intention 
+      function: 11.045361017187261 if task_2==task_4 else 0 
+
+   different_task_2_task_5: 
+      type: intention 
+      function: 11.40175425099138 if task_2==task_5 else 0 
+
+   different_task_2_task_6: 
+      type: intention 
+      function: 10.0 if task_2==task_6 else 0 
+
+   different_task_3_task_4: 
+      type: intention 
+      function: 10.295630140987 if task_3==task_4 else 0 
+
+   different_task_3_task_5: 
+      type: intention 
+      function: 9.055385138137417 if task_3==task_5 else 0 
+
+   different_task_3_task_6: 
+      type: intention 
+      function: 6.324555320336759 if task_3==task_6 else 0 
+
+   different_task_4_task_5: 
+      type: intention 
+      function: 5.830951894845301 if task_4==task_5 else 0 
+
+   different_task_4_task_6: 
+      type: intention 
+      function: 6.324555320336759 if task_4==task_6 else 0 
+
+   different_task_5_task_6: 
+      type: intention 
+      function: 6.4031242374328485 if task_5==task_6 else 0 
+
+   cout_taxi_1: 
+      type: intention 
+      function: 13.23606797749979 if task_1=='taxi_1' else 16.206555615733702 if task_2=='taxi_1' else 15.889957217937987 if task_3=='taxi_1' else 13.161277261891334 if task_4=='taxi_1' else 15.63014581273465 if task_5=='taxi_1' else 16.556349186104043
+   cout_taxi_2: 
+      type: intention 
+      function: 15.242640687119284 if task_1=='taxi_2' else 17.591720422868207 if task_2=='taxi_2' else 16.557900792370614 if task_3=='taxi_2' else 14.154404651730202 if task_4=='taxi_2' else 15.729165326327434 if task_5=='taxi_2' else 20.028485141103623
+   cout_taxi_3: 
+      type: intention 
+      function: 13.0 if task_1=='taxi_3' else 15.812106891197692 if task_2=='taxi_3' else 15.811388300841898 if task_3=='taxi_3' else 13.345230764828106 if task_4=='taxi_3' else 15.10228176773423 if task_5=='taxi_3' else 16.97056274847714
+
+agents: 
+   task_1: 
+      capacity: 1 
+   task_2: 
+      capacity: 1 
+   task_3: 
+      capacity: 1 
+   task_4: 
+      capacity: 1 
+   task_5: 
+      capacity: 1 
+   task_6: 
+      capacity: 1 

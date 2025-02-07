@@ -1,0 +1,103 @@
+{
+  "agt_metrics": {
+    "task_1": {
+      "activity_ratio": 0.10122846798785118,
+      "count_ext_msg": {
+        "_discovery_task_1": 9,
+        "task_1": 150
+      },
+      "cycles": {
+        "task_1": 30
+      },
+      "size_ext_msg": {
+        "_discovery_task_1": 0,
+        "task_1": 150
+      }
+    },
+    "task_2": {
+      "activity_ratio": 0.1284492618742873,
+      "count_ext_msg": {
+        "_discovery_task_2": 9,
+        "task_2": 150
+      },
+      "cycles": {
+        "task_2": 30
+      },
+      "size_ext_msg": {
+        "_discovery_task_2": 0,
+        "task_2": 150
+      }
+    },
+    "task_3": {
+      "activity_ratio": 0.11040305939574765,
+      "count_ext_msg": {
+        "_discovery_task_3": 9,
+        "task_3": 150
+      },
+      "cycles": {
+        "task_3": 30
+      },
+      "size_ext_msg": {
+        "_discovery_task_3": 0,
+        "task_3": 150
+      }
+    },
+    "task_4": {
+      "activity_ratio": 0.10824664182547052,
+      "count_ext_msg": {
+        "_discovery_task_4": 9,
+        "task_4": 150
+      },
+      "cycles": {
+        "task_4": 30
+      },
+      "size_ext_msg": {
+        "_discovery_task_4": 0,
+        "task_4": 150
+      }
+    },
+    "task_5": {
+      "activity_ratio": 0.11682375678640437,
+      "count_ext_msg": {
+        "_discovery_task_5": 9,
+        "task_5": 150
+      },
+      "cycles": {
+        "task_5": 30
+      },
+      "size_ext_msg": {
+        "_discovery_task_5": 0,
+        "task_5": 150
+      }
+    },
+    "task_6": {
+      "activity_ratio": 0.10818656448817254,
+      "count_ext_msg": {
+        "_discovery_task_6": 9,
+        "task_6": 150
+      },
+      "cycles": {
+        "task_6": 30
+      },
+      "size_ext_msg": {
+        "_discovery_task_6": 0,
+        "task_6": 150
+      }
+    }
+  },
+  "assignment": {
+    "task_1": "taxi_3",
+    "task_2": "taxi_1",
+    "task_3": "taxi_2",
+    "task_4": "taxi_2",
+    "task_5": "taxi_3",
+    "task_6": "taxi_1"
+  },
+  "cost": 62.40183487566748,
+  "cycle": 30,
+  "msg_count": 954,
+  "msg_size": 900,
+  "status": "FINISHED",
+  "time": 0.13192350799999986,
+  "violation": 0
+}

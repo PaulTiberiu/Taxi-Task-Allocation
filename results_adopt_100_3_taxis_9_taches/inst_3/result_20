@@ -1,0 +1,148 @@
+{
+  "agt_metrics": {
+    "task_1": {
+      "activity_ratio": 0.2432006814611786,
+      "count_ext_msg": {
+        "_discovery_task_1": 12,
+        "task_1": 480
+      },
+      "cycles": {
+        "task_1": 59
+      },
+      "size_ext_msg": {
+        "_discovery_task_1": 0,
+        "task_1": 480
+      }
+    },
+    "task_2": {
+      "activity_ratio": 0.28540211247896663,
+      "count_ext_msg": {
+        "_discovery_task_2": 12,
+        "task_2": 472
+      },
+      "cycles": {
+        "task_2": 58
+      },
+      "size_ext_msg": {
+        "_discovery_task_2": 0,
+        "task_2": 472
+      }
+    },
+    "task_3": {
+      "activity_ratio": 0.19323634257792538,
+      "count_ext_msg": {
+        "_discovery_task_3": 12,
+        "task_3": 472
+      },
+      "cycles": {
+        "task_3": 58
+      },
+      "size_ext_msg": {
+        "_discovery_task_3": 0,
+        "task_3": 472
+      }
+    },
+    "task_4": {
+      "activity_ratio": 0.14891797242651694,
+      "count_ext_msg": {
+        "_discovery_task_4": 12,
+        "task_4": 472
+      },
+      "cycles": {
+        "task_4": 58
+      },
+      "size_ext_msg": {
+        "_discovery_task_4": 0,
+        "task_4": 472
+      }
+    },
+    "task_5": {
+      "activity_ratio": 0.22959734526532707,
+      "count_ext_msg": {
+        "_discovery_task_5": 12,
+        "task_5": 472
+      },
+      "cycles": {
+        "task_5": 58
+      },
+      "size_ext_msg": {
+        "_discovery_task_5": 0,
+        "task_5": 472
+      }
+    },
+    "task_6": {
+      "activity_ratio": 0.24273151617897315,
+      "count_ext_msg": {
+        "_discovery_task_6": 12,
+        "task_6": 472
+      },
+      "cycles": {
+        "task_6": 58
+      },
+      "size_ext_msg": {
+        "_discovery_task_6": 0,
+        "task_6": 472
+      }
+    },
+    "task_7": {
+      "activity_ratio": 0.24498434539139488,
+      "count_ext_msg": {
+        "_discovery_task_7": 12,
+        "task_7": 480
+      },
+      "cycles": {
+        "task_7": 59
+      },
+      "size_ext_msg": {
+        "_discovery_task_7": 0,
+        "task_7": 480
+      }
+    },
+    "task_8": {
+      "activity_ratio": 0.2556228093830312,
+      "count_ext_msg": {
+        "_discovery_task_8": 12,
+        "task_8": 480
+      },
+      "cycles": {
+        "task_8": 59
+      },
+      "size_ext_msg": {
+        "_discovery_task_8": 0,
+        "task_8": 480
+      }
+    },
+    "task_9": {
+      "activity_ratio": 0.1854805764496384,
+      "count_ext_msg": {
+        "_discovery_task_9": 12,
+        "task_9": 472
+      },
+      "cycles": {
+        "task_9": 58
+      },
+      "size_ext_msg": {
+        "_discovery_task_9": 0,
+        "task_9": 472
+      }
+    }
+  },
+  "assignment": {
+    "task_1": "taxi_3",
+    "task_2": "taxi_2",
+    "task_3": "taxi_2",
+    "task_4": "taxi_3",
+    "task_5": "taxi_2",
+    "task_6": "taxi_1",
+    "task_7": "taxi_2",
+    "task_8": "taxi_1",
+    "task_9": "taxi_1"
+  },
+  "cost": 122.24211342590547,
+  "cycle": 59,
+  "msg_count": 4380,
+  "msg_size": 4272,
+  "status": "TIMEOUT",
+  "time": 3.0617816660014796,
+  "violation": 0
+}

@@ -1,0 +1,69 @@
+name: Taxi Task Allocation Problem 
+objective: min 
+
+domains: 
+   taxis: 
+      values: [taxi_1,taxi_2,taxi_3]
+
+variables: 
+   task_1 : 
+      domain: taxis 
+   task_2 : 
+      domain: taxis 
+   task_3 : 
+      domain: taxis 
+
+constraints: 
+   pref_1: 
+      type: extensional 
+      variables: task_1 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_2: 
+      type: extensional 
+      variables: task_2 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   pref_3: 
+      type: extensional 
+      variables: task_3 
+      values: 
+         1: taxi_1 
+         2: taxi_2 
+         3: taxi_3 
+
+   different_task_1_task_2: 
+      type: intention 
+      function: 16.1245154965971 if task_1==task_2 else 0 
+
+   different_task_1_task_3: 
+      type: intention 
+      function: 15.132745950421556 if task_1==task_3 else 0 
+
+   different_task_2_task_3: 
+      type: intention 
+      function: 4.47213595499958 if task_2==task_3 else 0 
+
+   cout_taxi_1: 
+      type: intention 
+      function: 8.60555127546399 if task_1=='taxi_1' else 23.49593508340934 if task_2=='taxi_1' else 34.32189330270894
+   cout_taxi_2: 
+      type: intention 
+      function: 15.310251186183615 if task_1=='taxi_2' else 19.527300430865456 if task_2=='taxi_2' else 30.658274581158963
+   cout_taxi_3: 
+      type: intention 
+      function: 23.252433979852487 if task_1=='taxi_3' else 31.557669463739305 if task_2=='taxi_3' else 42.660494656800964
+
+agents: 
+   task_1: 
+      capacity: 1 
+   task_2: 
+      capacity: 1 
+   task_3: 
+      capacity: 1 
