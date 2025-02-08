@@ -1,6 +1,6 @@
 #!/bin/bash
 
-output_root="results_adopt_3_taxis_3_taches"
+output_root="results_dsa_3_taxis_3_taches"
 mkdir -p "$output_root"  # Create main results directory
 
 # Iterate over i (1 to 10)
