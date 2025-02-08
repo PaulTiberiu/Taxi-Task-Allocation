@@ -1,0 +1,58 @@
+{
+  "agt_metrics": {
+    "task_1": {
+      "activity_ratio": 0.06534090581851669,
+      "count_ext_msg": {
+        "_discovery_task_1": 6,
+        "task_1": 60
+      },
+      "cycles": {
+        "task_1": 30
+      },
+      "size_ext_msg": {
+        "_discovery_task_1": 0,
+        "task_1": 60
+      }
+    },
+    "task_2": {
+      "activity_ratio": 0.059530205628592396,
+      "count_ext_msg": {
+        "_discovery_task_2": 6,
+        "task_2": 60
+      },
+      "cycles": {
+        "task_2": 30
+      },
+      "size_ext_msg": {
+        "_discovery_task_2": 0,
+        "task_2": 60
+      }
+    },
+    "task_3": {
+      "activity_ratio": 0.04791753249037896,
+      "count_ext_msg": {
+        "_discovery_task_3": 6,
+        "task_3": 60
+      },
+      "cycles": {
+        "task_3": 30
+      },
+      "size_ext_msg": {
+        "_discovery_task_3": 0,
+        "task_3": 60
+      }
+    }
+  },
+  "assignment": {
+    "task_1": "taxi_1",
+    "task_2": "taxi_3",
+    "task_3": "taxi_2"
+  },
+  "cost": 32.527349871690475,
+  "cycle": 30,
+  "msg_count": 198,
+  "msg_size": 180,
+  "status": "FINISHED",
+  "time": 0.12187147499935236,
+  "violation": 0
+}

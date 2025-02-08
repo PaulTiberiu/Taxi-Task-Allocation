@@ -1,0 +1,103 @@
+{
+  "agt_metrics": {
+    "task_1": {
+      "activity_ratio": 0.08105862477263134,
+      "count_ext_msg": {
+        "_discovery_task_1": 9,
+        "task_1": 500
+      },
+      "cycles": {
+        "task_1": 100
+      },
+      "size_ext_msg": {
+        "_discovery_task_1": 0,
+        "task_1": 500
+      }
+    },
+    "task_2": {
+      "activity_ratio": 0.06470276648878329,
+      "count_ext_msg": {
+        "_discovery_task_2": 9,
+        "task_2": 500
+      },
+      "cycles": {
+        "task_2": 100
+      },
+      "size_ext_msg": {
+        "_discovery_task_2": 0,
+        "task_2": 500
+      }
+    },
+    "task_3": {
+      "activity_ratio": 0.07980977043660592,
+      "count_ext_msg": {
+        "_discovery_task_3": 9,
+        "task_3": 500
+      },
+      "cycles": {
+        "task_3": 100
+      },
+      "size_ext_msg": {
+        "_discovery_task_3": 0,
+        "task_3": 500
+      }
+    },
+    "task_4": {
+      "activity_ratio": 0.0688425368797063,
+      "count_ext_msg": {
+        "_discovery_task_4": 9,
+        "task_4": 500
+      },
+      "cycles": {
+        "task_4": 100
+      },
+      "size_ext_msg": {
+        "_discovery_task_4": 0,
+        "task_4": 500
+      }
+    },
+    "task_5": {
+      "activity_ratio": 0.1075982318736679,
+      "count_ext_msg": {
+        "_discovery_task_5": 9,
+        "task_5": 500
+      },
+      "cycles": {
+        "task_5": 100
+      },
+      "size_ext_msg": {
+        "_discovery_task_5": 0,
+        "task_5": 500
+      }
+    },
+    "task_6": {
+      "activity_ratio": 0.047472313045393476,
+      "count_ext_msg": {
+        "_discovery_task_6": 9,
+        "task_6": 500
+      },
+      "cycles": {
+        "task_6": 100
+      },
+      "size_ext_msg": {
+        "_discovery_task_6": 0,
+        "task_6": 500
+      }
+    }
+  },
+  "assignment": {
+    "task_1": "taxi_2",
+    "task_2": "taxi_3",
+    "task_3": "taxi_1",
+    "task_4": "taxi_2",
+    "task_5": "taxi_3",
+    "task_6": "taxi_2"
+  },
+  "cost": 92.60872227253732,
+  "cycle": 100,
+  "msg_count": 3054,
+  "msg_size": 3000,
+  "status": "FINISHED",
+  "time": 0.6396399740006018,
+  "violation": 0
+}
